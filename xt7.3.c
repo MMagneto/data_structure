@@ -14,25 +14,25 @@ int main(int argc, const char *argv[]) {
 	int seq[N];
 
 	while(K--) {
-		cnt = N;
-		lastnum = 0;
-		currentnum = 0;
 		for(i=0;i<N;i++) {
 			scanf("%d", &seq[i]);
 		}
-		for(i=0;i<0;i++ ) {
+		tag = 0;
+		subseqcnt = 1;
+		subseqMax = seq[0];
+		currentnum = seq[0];
+		for(i=1;i<N;i++ ) {
+			lastnum = currentnum;
+			currentnum = seq[i];
 			if(currentnum<lastnum) {
-				//ÔÚÒ»¸ö Pop ÑÇĞòÁĞÖĞ£¬µ±Ç°ÊıÓ¦¸Ã±ÈÉÏÒ»¸öÊıĞ¡1
 				subseqcnt++;
-				if(currentnum<subseqMax && currentnum != lastnum-1 ) {
-					tag = 1;
-				}
-			} else if(currentnum>lastnum) {
-				//Èç¹ûĞÂÊı´óÓÚÀÏÊı£¬Ôò³öÏÖÁËĞÂĞòÁĞ
-				subseqcnt = 0;
-				if(subseqMax>currentnum) {
-					subseqMax = currentnum;
-				}
+			} else if(currentnum>lastnum && currentnum>subseqMax)  {
+				//å¦‚æœæ–°æ•°å¤§äºè€æ•°,ä¸”å¤§äºä¹‹å‰å‡ºç°è¿‡çš„æ‰€æœ‰çš„æ•°
+				//åˆ™å‡ºç°äº†æ–°åºåˆ—
+				subseqcnt = 1;
+				subseqMax = currentnum;
+			} else if(currentnum >lastnum && currentnum<subseqMax ) {
+				tag = 1;
 			}
 			if(subseqcnt>M) {
 				tag = 1;
