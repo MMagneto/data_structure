@@ -28,15 +28,18 @@ struct SNode {
 	int MaxSize;		/*堆栈最大容量*/
 };
 typedef PtrToSNode Stack;
+typedef enum {num, opr, end} Type;
 
 Stack CreateStack(int Maxsize);
 bool IsFull(Stack S);
 bool Push(Stack S, ElementType X);
 bool IsEmpty(Stack S);
 ElementType Pop(Stack S);
-ElementType MiddlefixExp(Expr);
-typedef enum {num, opr, end} Type;
+ElementType PostExp(char *Expr);
+
 Type GetOp(char *Expr, int *start, char* str);
+
+char *MiddleToPost( char *Expr);
 
 int main(int agrc, const char* argv[])
 {
@@ -56,7 +59,7 @@ int main(int agrc, const char* argv[])
 	char Expr[MAXOP];
 	Stack S = CreateStack(100);
 	fgets(Expr,MAXOP, stdin);
-	f = MiddlefixExp(Expr);
+	f = PostExp(Expr);
 	if(f<INFINITY) {
 		printf("%.4f\n", f);
 	} else {
@@ -67,8 +70,31 @@ int main(int agrc, const char* argv[])
 	return 0;
 }
 
-//计算一个中缀表达式的值
-ElementType MiddlefixExp(Expr)
+char *MiddleToPost( char *Expr) {
+	/*把中缀表达式转换成后缀表达式*/
+	Stack S = CreateStack(2*MAXOP);
+	char NewExpr[MAXOP];
+	char *p = Expr;
+	int i=0;
+	/*跳过表达式前空格*/
+	while((str[0]=Expr[(*start)++])==' ');
+	while(*p)!='\0' && (*p)!='=') {
+		switch(*p) {
+			case '*': push(*p); NewExpr[i++]=' '; break;
+			case '/': push(*p); NewExpr[i++]=' '; break;
+			case '+': push(*p); NewExpr[i++]=' '; break;
+			case '-': Push(*p); NewExpr[i++]=' '; break;
+
+
+
+
+
+
+
+
+
+//计算一个后缀表达式的值
+ElementType PostfixExp(char *Expr)
 {
 	/*调用 GetOp 函数读入后缀表达式并求值*/
 	Stack S;
@@ -90,7 +116,7 @@ ElementType MiddlefixExp(Expr)
 			} else {
 				Op2 = INFINITY;
 			}
-			if(!ISEmpty(S)) {
+			if(!IsEmpty(S)) {
 				Op1 = Pop(S);
 			} else {
 				Op2 = INFINITY;
@@ -98,9 +124,9 @@ ElementType MiddlefixExp(Expr)
 			switch(str[0]) {
 			case '+': Push(S, Op1+Op2); break;
 			case '*': Push(S, Op1*Op2); break;
-			case '-': push(S, Op1-Op2); break;
+			case '-': Push(S, Op1-Op2); break;
 			case '/':
-					  if(Op2 !=0.0 ) /*检查坟墓是否位0*/
+					  if(Op2 !=0.0 ) /*检查分母是否位0*/
 						  Push(S, Op1/Op2);
 					  else {
 						  printf("错误：除法分母位零\n");
@@ -127,7 +153,7 @@ Type GetOp(char *Expr, int *start, char *str) {
 	 * 并保存在字符串str中
 	 */
 	
-	 int i=0
+	 int i=0;
 	 
 	/*跳过表达式前空格*/
 	while((str[0]=Expr[(*start)++])==' ');
@@ -144,13 +170,21 @@ Type GetOp(char *Expr, int *start, char *str) {
 	if(i==0) 
 		return end; /*读到了结束*/
 	/*如果str[0]是数字，或是符号跟个数字*/
-	else if(isdifit(str[0]) || isdigit(str[1]))
+	else if(isdigit(str[0]) || isdigit(str[1]))
 		/*表示此时str存的是一个数字*/
 		return num;
 	else
 		/* 表示此时存的是一个运算符*/
 		return opr;
 }
+
+//bool isdigit(char c) {
+//	if( c>='0' && c<='0') {
+//		return true;
+//	} else {
+//		return false;
+//	}
+//}
 
 /* 生成空堆栈
  * 其最大长度位 MaxSize
