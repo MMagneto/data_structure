@@ -1,34 +1,34 @@
-/* ¶ş²æÊ÷µÄ */
-
+/* äºŒå‰æ ‘çš„éå† */
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#define NoInfo 0
+
+int NoInfo=0;
+int MaxSize=100;
 
 typedef int ElementTypeBT;
 typedef struct TNode *PtrToTree;
-typedef PtrToTree BinTree; /*¶ş²æÊ÷ÀàĞÍ*/
-struct TNode {			/*Ê÷½áµã¶¨Òå */
-	ElementTypeBT Data;	/*½áµãÊı¾İ*/
-	BinTree Left;		/*Ö¸Ïò×ó×ÓÊ÷*/
-	BinTree Right;		/*Ö¸ÏòÓÒ×ÓÊ÷*/
+typedef PtrToTree BinTree; /*äºŒå‰æ ‘ç±»å‹*/
+struct TNode {			/*æ ‘ç»“ç‚¹å®šä¹‰ */
+	ElementTypeBT Data;	/*ç»“ç‚¹æ•°æ®*/
+	BinTree Left;		/*æŒ‡å‘å·¦å­æ ‘*/
+	BinTree Right;		/*æŒ‡å‘å³å­æ ‘*/
 };
 
 
 
-/* ¶ÓÁĞ(Queue)µÄÁ´Ê½´æ´¢ÊµÏÖ */
+/* é˜Ÿåˆ—(Queue)çš„é“¾å¼å­˜å‚¨å®ç° */
 typedef BinTree ElementTypeQ;
 typedef struct Node * PtrToNode;
-struct Node {				/*¶ÓÁĞÖĞµÄ½áµã*/
+struct Node {				/*é˜Ÿåˆ—ä¸­çš„ç»“ç‚¹*/
 	ElementTypeQ Data;
 	PtrToNode Next;
 };
 typedef PtrToNode Position;
-
 typedef struct QNode * PtrToQNode;
 struct QNode {
-	Position Front, Rear;	/*¶ÓÁĞµÄÍ·¡¢Î²Ö¸Õë*/
-	int MaxSize;			/*¶ÓÁĞ×î´óÈİÁ¿*/
+	Position Front, Rear;	/*é˜Ÿåˆ—çš„å¤´ã€å°¾æŒ‡é’ˆ*/
+	int MaxSize;			/*é˜Ÿåˆ—æœ€å¤§å®¹é‡*/
 };
 typedef PtrToQNode Queue;
 
@@ -41,83 +41,142 @@ ElementTypeQ DeleteQ(Queue Q);
 
 
 
-/*¶ş²æÊ÷µÄ²Ù×÷*/
+/*äºŒå‰æ ‘çš„æ“ä½œ*/
 bool IsEmptyBT(BinTree BT);
 //void InorderTraversal(BinTree BT);
 BinTree CreateBinTree();
+void LevelOrderTraversal( BinTree BT);
+
 
 bool IsEmptyBT(BinTree BT) {
 	if(BT) return true;
 	else return false;
 }
 
-//void InorderTraversal(BinTree BT) {
-//	BinTree T;
-//	Stack S=CreateStack(); /*´´½¨¿Õ¶ÑÕ» S £¬ÔªËØÀàĞÍlÎªBinTree;*/
-//	T = BT; /*´Ó¸ù½Úµã³ö·¢*/
-//	while(T || IsEmptyQ(S)) {
-//		while(T) {/*Ò»Ö±Ïò×ó²¢½«ÑØÍ¾½áµãÑ¹Èë¶ÑÕ» */
-//			Push(S, T);
+//void InOrderTraversal( BinTree BT )
+//{	/*ä¸­åºéå†äºŒå‰æ ‘*/
+//
+//	BinTree T = BT;
+//	Stack S = CreateStack( Maxsize );
+//	while( T || IsEmpty(s)) {
+//		while(T) {	/*ä¸€ç›´å‘å·¦å¹¶å°†æ²¿é€”ç»“ç‚¹å‹å…¥å †æ ˆ */
+//			Push(S,T);
 //			T = T->Left;
 //		}
-//		T = Pop(S); /*½áµãµ¯³ö¶ÑÕ» */
-//		printf("%d", T->Data);
-//		T = T->Right; /*×ªÏòÓÒ×ÓÊ÷ */
+//		if(!IsEmpty(S)) {
+//			T = Pop(S);	/*ç»“ç‚¹å¼¹å‡ºå †æ ˆ*/
+//			printf("%5d", T->Data);	/*ï¼ˆè®¿é—®ï¼‰æ‰“å°ç»“ç‚¹*/
+//			T = T->Right;	/*è½¬å‘å³å­æ ‘*/
+//		}
 //	}
 //}
 //
+
+/*å±‚åºéå†äºŒå‰æ ‘â€”â€”é˜Ÿåˆ—*/
+void LevelOrderTraversal( BinTree BT)
+{
+	Queue Q;
+	BinTree T;
+	if(!BT) return;	/*è‹¥æ˜¯ç©ºæ ‘ï¼Œç›´æ¥è¿”å›*/
+	Q = CreateQueue(MaxSize);	/*åˆ›å»ºå¹¶åˆå§‹åŒ–é˜Ÿåˆ—*/
+	AddQ(Q,BT);
+	while(!IsEmptyQ(Q)) {
+		T = DeleteQ(Q);
+		printf("%d\n", T->Data);
+		if(T->Left) AddQ(Q, T->Left);
+		if(T->Right) AddQ(Q, T->Right);
+	}
+}
+
+
 BinTree CreateBinTree() {
 	ElementTypeBT Data;
 	BinTree BT, T;
-	Queue Q = CreateQueue(100);/*´´½¨¿Õ¶ÓÁĞ*/
+	Queue Q = CreateQueue(100);/*åˆ›å»ºç©ºé˜Ÿåˆ—*/
 
-	/*½¨Á¢µÚÒ»¸ö½áµã£¬¼´¸ù½Ó½Úµã*/
+	/*å»ºç«‹ç¬¬ä¸€ä¸ªç»“ç‚¹ï¼Œå³æ ¹æ¥èŠ‚ç‚¹*/
 	scanf("%d" , &Data);
 	if(Data!=NoInfo) {
-		/*·ÖÅä¸ù½Úµãµ¥Ôª£¬²¢½«½áµãµØÖ·Èë¶Ó*/
+		/*åˆ†é…æ ¹èŠ‚ç‚¹å•å…ƒï¼Œå¹¶å°†ç»“ç‚¹åœ°å€å…¥é˜Ÿ*/
 		BT = (BinTree)malloc(sizeof(struct TNode));
 		BT->Data = Data;
-		BT->Left = BT->Right = NULL;
+		BT->Left = NULL;
+		BT->Right = NULL;
 		AddQ(Q, BT);
 	} else {
-		/* ÈôµÚÒ»¸öÊı¾İ¾ÍÊÇ 0£¬ ·µ»Ø¿ÕÊ÷ */
+		/* è‹¥ç¬¬ä¸€ä¸ªæ•°æ®å°±æ˜¯ 0ï¼Œ è¿”å›ç©ºæ ‘ */
 		return NULL;
 	}
+	int cnt = 0;
 
 	while(!IsEmptyQ(Q)) {
-		T = DeleteQ(Q); /*´Ó¶ÓÁĞÖĞÈ¡³öÒ»½áµãµØÖ· */
-		scanf("%d", &Data); /* ¶ÁÈë T µÄ×óº¢×Ó */
-		printf("%d\n", Data);
+		T = DeleteQ(Q); /*ä»é˜Ÿåˆ—ä¸­å–å‡ºä¸€ç»“ç‚¹åœ°å€ */
+		scanf("%d", &Data); /* è¯»å…¥ T çš„å·¦å­©å­ */
 		if(Data == NoInfo ) {
 			T->Left = NULL;
 		} else {
 			T->Left = (BinTree)malloc(sizeof(struct TNode));
 			T->Left->Data = Data;
-			T->Left->Left = T->Left->Right = NULL;
-			AddQ(Q,T->Left);
+			T->Left->Left = NULL;
+			T->Left->Right = NULL;
+			printf("addQ left = %d\n", AddQ(Q,T->Left));
+			printf("is empty Q? = %d\n", IsEmptyQ(Q));
+
 		}
 
-		scanf("%d", &Data); /* ¶ÁÈë T µÄÓÒº¢×Ó */
-		printf("%d", Data);
+		scanf("%d", &Data); /* è¯»å…¥ T çš„å³å­©å­ */
 		if(Data == NoInfo ) {
 			T->Right = NULL;
 		} else {
 			T->Right = (BinTree)malloc(sizeof(struct TNode));
 			T->Right->Data = Data;
-			T->Right->Left = T->Right->Right = NULL;
-			AddQ(Q,T->Right);
+			T->Right->Left = NULL;
+			T->Right->Right = NULL;
+			printf("addQ right = %d\n", AddQ(Q,T->Right));
+			printf("is empty Q? = %d\n", IsEmptyQ(Q));
 		}
-	}/*½áÊø while Ñ­»· */
-
-		printf("here");
-
+		cnt++;
+	}/*ç»“æŸ while å¾ªç¯ */
+	printf("loop time=%d\n", cnt);
 	return BT;
 }
 
 
 int main(int argc, const char* argv[])
 {
-	BinTree BT = CreateBinTree(); 
+//	BinTree BT = CreateBinTree(); 
+//	printf("OUTPUT:\n");
+//	LevelOrderTraversal(BT);
+	Queue Q = CreateQueue(MaxSize);
+	BinTree BT, T;
+	T = (BinTree)malloc(sizeof(struct TNode));
+	T->Data = 1;
+	T->Left = NULL;
+	T->Right = NULL;
+	AddQ(Q, T);
+	BT = DeleteQ(Q);
+	printf("first:%d\n", BT->Data);
+	BT->Left = (BinTree)malloc(sizeof(struct TNode));
+	BT->Left->Data = 2;
+	BT->Left->Left = NULL;
+	BT->Left->Right = NULL;
+	AddQ(Q, BT->Left);
+	BT->Right = (BinTree)malloc(sizeof(struct TNode));
+	BT->Right->Data = 3;
+	BT->Right->Left = NULL;
+	BT->Right->Right = NULL;
+	AddQ(Q, BT->Right);
+	printf("%d\n", IsEmptyQ(Q));
+
+	printf("è¾“å‡º:\n");
+	int cnt = 0;
+	while(!IsEmptyQ(Q)) {
+		BT = DeleteQ(Q);
+		printf("%d\n", BT->Data);
+		//printf("%d\n", cnt++);
+	}
+	
+
 
 	return 0;
 }
@@ -151,7 +210,7 @@ bool AddQ(Queue Q, ElementTypeQ X)
 {
 	bool answer;
 	if (IsFullQ(Q) == true ) {
-		printf("%s\n", "¶ÓÁĞÂú");
+		printf("%s\n", "é˜Ÿåˆ—æ»¡");
 		answer = false;
 	} else {
 		PtrToNode newNode = (PtrToNode)malloc(sizeof(struct Node));
@@ -176,7 +235,8 @@ bool IsEmptyQ(Queue Q)
 ElementTypeQ DeleteQ(Queue Q)
 {
 	ElementTypeQ ERROR = NULL;
-	ElementTypeQ NodeData = ERROR;
+	ElementTypeQ NodeData = (ElementTypeQ)malloc(sizeof(ElementTypeQ)); 
+	NodeData = NULL;
 
 	if(IsEmptyQ(Q)==false) {
 		PtrToNode OldNode = Q->Front->Next;
