@@ -1,4 +1,4 @@
-/*¶ş²æÆ½ºâhÊ÷*/
+/*äºŒå‰å¹³è¡¡hæ ‘*/
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -7,59 +7,109 @@
 typedef struct AVLNode * Position;
 typedef Position AVLTree;
 typedef struct AVLTree {
-	ElmentType Data;	/*½áµãÊı¾İ*/
-	AVLTree Left;		/*Ö¸Ïò×ó×ÓÊ÷*/
-	AVLTree Right;		/*Ö¸ÏòÓÒ×ÓÊ÷*/
-	int height;			/*Ê÷¸ß*/
+	ElmentType Data;	/*ç»“ç‚¹æ•°æ®*/
+	AVLTree Left;		/*æŒ‡å‘å·¦å­æ ‘*/
+	AVLTree Right;		/*æŒ‡å‘å³å­æ ‘*/
+	int height;			/*æ ‘é«˜*/
 };
+
+
+int Max(int a, int b); 
+AVLTree Insert(AVLTree T, ElementType X); 
+AVLTree SingleLeftRotation(AVLTree A); 
+AVLTree SingleRightRotation(AVLTree A); 
+AVLTree DoubleRightLeftRotation(AVLTree A);
 
 int Max(int a, int b) {
 	return a>b?a:b;
 }
 
 AVLTree Insert(AVLTree T, ElementType X) {
-	/*½« X x²åÈë AVL Ê÷ T ÖĞ£¬²¢ÇÒ·µ»Øµ÷ÕûºóµÄ AVL Ê÷ */
-	if(!T) { /*Èô²åÈë¿ÕÊ÷£¬ÔòĞÂ½¨°üº¬Ò»¸ö½áµãµÄÊ÷*/
+	/*å°† X xæ’å…¥ AVL æ ‘ T ä¸­ï¼Œå¹¶ä¸”è¿”å›è°ƒæ•´åçš„ AVL æ ‘ */
+	if(!T) { /*è‹¥æ’å…¥ç©ºæ ‘ï¼Œåˆ™æ–°å»ºåŒ…å«ä¸€ä¸ªç»“ç‚¹çš„æ ‘*/
 		T = (AVLTree)malloc(sizeof(struct AVLNode));
 		T->Data = X;
 		T->Height = 1;
 		T->Left = T->Right = NULL;
-	} /* if (²åÈë¿ÕÊ÷) ½áÊø*/
+	} /* if (æ’å…¥ç©ºæ ‘) ç»“æŸ*/
 	else if(X < T->Data ) {
-		/*²åÈë T µÄ×ó×ÓÊ÷ */
+		/*æ’å…¥ T çš„å·¦å­æ ‘ */
 		T->Left = Insert(T->Left, X);
-		/*Èç¹ûĞèÒª×óĞı */
+		/*å¦‚æœéœ€è¦å·¦æ—‹ */
 		if(GetHeight(T->Left) - GetHeight(T->Right) == 2) {
 			if(X < T->Left->Data) {
-				T = SingleLeftRotation(T); /*×óµ¥Ğı*/
+				T = SingleLeftRotation(T); /*å·¦å•æ—‹*/
 			} else {
-				T = DoubleLeftRightRotation(T); /*×ó-ÓÒË«Ğı*/
+				T = DoubleLeftRightRotation(T); /*å·¦-å³åŒæ—‹*/
 			}
 		} 
-	}/* else if(²åÈë×ó×ÓÊ÷) ½áÊø */
+	}/* else if(æ’å…¥å·¦å­æ ‘) ç»“æŸ */
 	
 	else if(X > T->Data) {
-		/*²åÈë T µÄÓÒ×ÓÊ÷ */
+		/*æ’å…¥ T çš„å³å­æ ‘ */
 		T->Right = Insert(T->Right, X);
-		/*Èç¹ûĞèÒªÓÒĞı*/
+		/*å¦‚æœéœ€è¦å³æ—‹*/
 		if(GetHeight(T->Left) - GetHeight(T->Right) == -2 ) {
 			if(X > T->Right->Data) {
-				T = SingleRightRotation(T); /*ÓÒµ¥Ğı*/
+				T = SingleRightRotation(T); /*å³å•æ—‹*/
 			} else {
-				T = DoubleRightLeftRotation(T); /*ÓÒ-×óË«Ğı*/
+				T = DoubleRightLeftRotation(T); /*å³-å·¦åŒæ—‹*/
 			}
 		}
-	}/* else if (²åÈëÓÒ×ÓÊ÷) ½áÊø */
+	}/* else if (æ’å…¥å³å­æ ‘) ç»“æŸ */
 
-	/* else X == T->Data ÎŞĞè²åÈë */
+	/* else X == T->Data æ— éœ€æ’å…¥ */
 
-	/* ¸üĞÂÊ÷¸ß */
+	/* æ›´æ–°æ ‘é«˜ */
 	T->Height = Max(GetHeight(T->Left), GetHeight(T->Right)) + 1;
 
 	return T;
 }
 
 AVLTree SingleLeftRotation(AVLTree A) {
-	/* ×¢Òâ£º A ±ØĞëÓĞÒ»¸ö×ó×Ó½áµã B */
-	/* ½« A Óë B ×öÈçÍ¼ 4.35 ËùÊ¾µÄ×óµ¥Ğı£¬
-	 * ¸üĞÂ×ó
+	/* æ³¨æ„ï¼š A å¿…é¡»æœ‰ä¸€ä¸ªå·¦å­ç»“ç‚¹ B */
+	/* å°† A ä¸ B åšå¦‚å›¾ 4.35 æ‰€ç¤ºçš„å·¦å•æ—‹ï¼Œ
+	 * æ›´æ–° A ä¸ B çš„é«˜åº¦ï¼Œè¿”å›æ–°çš„æ ¹èŠ‚ç‚¹ã€‚
+	 */
+	AVLTree B = A->Left;
+	A->Left =  B->Right;
+	B->Right = A;
+	A->Height = Max(GetHeight(A->Left), GetHeight(A->Right)) + 1;
+	B->Height = Max(GetHeight(B->Left), A->Height) + 1;
+
+	return B;
+}
+
+AVLTree SingleRightRotation(AVLTree A) {
+	/* æ³¨æ„ï¼š A å¿…é¡»æœ‰ä¸€ä¸ªå³å­ç»“ç‚¹ B */
+	/* å°† A ä¸ B åšå³å•æ—‹ï¼Œ
+	 * æ›´æ–° A ä¸ B çš„é«˜åº¦ï¼Œè¿”å›æ–°çš„æ ¹èŠ‚ç‚¹ã€‚
+	 */
+	AVLTree B = A->Right;
+	A->Right =  B->Left;
+	B->Left = A;
+	A->Height = Max(GetHeight(A->Left), GetHeight(A->Right)) + 1;
+	B->Height = Max(GetHeight(B->Right), A->Height) + 1;
+
+	return B;
+}
+
+AVLTree DoubleLeftRightRotation(AVLTree A) {
+	/*æ³¨æ„ï¼š A å¿…é¡»æœ‰ä¸€ä¸ªå·¦å­ç»“ç‚¹B, ä¸”B å¿…é¡»æœ‰ä¸€ä¸ªå³å­èŠ‚ç‚¹ C */
+	/*å°†Aã€B ä¸ C åšå¦‚å›¾4.38æ‰€ç¤ºçš„ä¸¤æ¬¡å•æ—‹ï¼Œè¿”å›æ–°çš„æ ¹ç»“ç‚¹ C */
+
+	/*å°† B ä¸ C åšå³å•æ—‹ï¼ŒC è¢«è¿”å› */
+	A->Left = SingleRightRotation(A->Left);
+	/*å°† A ä¸ C åšå·¦å•æ—‹ï¼Œ C è¢«è¿”å› */
+	return SingleLeftRotation(A);
+}
+
+AVLTree DoubleRightLeftRotation(AVLTree A) {
+	/*æ³¨æ„ï¼š A å¿…é¡»æœ‰ä¸€ä¸ªå³å­ç»“ç‚¹B, ä¸”B å¿…é¡»æœ‰ä¸€ä¸ªå·¦å­èŠ‚ç‚¹ C */
+	/*å°†Aã€B ä¸ C åšå¦‚å›¾4.40æ‰€ç¤ºçš„ä¸¤æ¬¡å•æ—‹ï¼Œè¿”å›æ–°çš„æ ¹ç»“ç‚¹ C */
+
+	/*å°† B ä¸ C åšå·¦å•æ—‹ï¼ŒC è¢«è¿”å› */
+	A->Right = SingleLeftRotation(A->Right);
+	/*å°† A ä¸ C åšå³å•æ—‹ï¼Œ C è¢«è¿”å› */
+	return SingleRightRotation(A);
+}
