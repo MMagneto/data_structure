@@ -2,15 +2,17 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <string.h>
 
 typedef struct AVLNode * Position;
 typedef Position AVLTree;
-typedef struct AVLTree {
-	ElmentType Data;	/*结点数据*/
+typedef int ElementType;
+struct AVLNode {
+	ElementType Data;	/*结点数据*/
 	AVLTree Left;		/*指向左子树*/
 	AVLTree Right;		/*指向右子树*/
-	int height;			/*树高*/
+	int Height;			/*树高*/
 };
 
 
@@ -18,15 +20,45 @@ int Max(int a, int b);
 AVLTree Insert(AVLTree T, ElementType X); 
 AVLTree SingleLeftRotation(AVLTree A); 
 AVLTree SingleRightRotation(AVLTree A); 
+AVLTree DoubleLeftRightRotation(AVLTree A);
 AVLTree DoubleRightLeftRotation(AVLTree A);
+bool IsEmptyAVLTree(AVLTree T);
+int GetHeight(AVLTree T);
+
+int main(int argc, const char *argv[]) {
+	AVLTree T=NULL;
+	int number;
+	ElementType Data;
+	scanf("%d", &number);
+	for(int i=0;i<number;i++) {
+		scanf("%d", &Data);
+		T = Insert(T, Data);
+	}
+	printf("%d\n", T->Data);
+	return 0;
+}
+
+
 
 int Max(int a, int b) {
 	return a>b?a:b;
 }
+int GetHeight(AVLTree T) {
+	int height = 0;
+	if(T!=NULL) {
+		height = T->Height;
+	}
+	return height;
+}
+
+bool IsEmptyAVLTree(AVLTree T) {
+	if(T==NULL) return true;
+	else return false;
+}
 
 AVLTree Insert(AVLTree T, ElementType X) {
 	/*将 X x插入 AVL 树 T 中，并且返回调整后的 AVL 树 */
-	if(!T) { /*若插入空树，则新建包含一个结点的树*/
+	if(T==NULL) { /*若插入空树，则新建包含一个结点的树*/
 		T = (AVLTree)malloc(sizeof(struct AVLNode));
 		T->Data = X;
 		T->Height = 1;
@@ -113,4 +145,5 @@ AVLTree DoubleRightLeftRotation(AVLTree A) {
 	/*将 A 与 C 做右单旋， C 被返回 */
 	return SingleRightRotation(A);
 }
+
 
